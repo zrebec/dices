@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dices</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="wrapper">
+          <header>
+            Dice Roller
+          </header>
+          <main class="content">
+            <div id="gameModes" class="game-modes">
+              <button class="game-mode-btn" data-mode="allEqual">All Equal</button>
+              <button class="game-mode-btn" data-mode="pairs">Pairs</button>
+              <button class="game-mode-btn" data-mode="all">All</button>
+              <button class="game-mode-btn" data-mode="sequence">Sequence</button>
+              <button class="game-mode-btn" data-mode="evenOdd">Even/Odd</button>
+            </div>
+            <div id="diceContainer" class="dice-container">
+            </div>
+            <div>
+              <div class="stats">
+                <span>SUM:</span>
+                <span class="statsValue" id="statsSumValue">1</span>
+                <span>AVG:</span>
+                <span class="statsValue" id="statsAvgValue">1</span>
+                <span>TOTAL:</span>
+                <span class="statsValue" id="totalRollCountValue">0</span>
+              </div>
+              <div class="statis">
+                <span>Stopwatch:</span>
+                <span class="statsValue" id="totalElapsedTime">00:00:00</<span>
+              </div>
+              <button id="btnRoll" class="btn" disabled>Roll with dice</button>
+              <button id="btnPlus" class="btn" disabled>+</button>
+            </div>
+            <div id="alert" class="stats" style="display: none; color: red; font-weight: bold;"></div>
+          </main>
+          <footer>
+            Created in 2022
+          </footer>
+        </div>
+      </div>
+      <script src="./script.js"></script>
+</body>
+</html>
+

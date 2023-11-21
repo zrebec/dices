@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:400,400i,700");
+@import url("https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap");
+
+:root {
+	--canvas-font-size: 0.9rem;
+	--canvas-header-height: 3rem;
+	--canvas-footer-height: 2rem;
+	--primary-font-family: Lato, sans-serif;
+	--secondary-font-family: "Zen Dots", cursive;
+
+	--dice-size: 6rem;
+	--dice-symbol-size: 65%;
+
+	--table-background: #333333;
+	--table-foreground: white;
+	--dice-background: #222;
+	--dice-pots: orange;
+	--dice-padding: calc(var(--dice-size) / 5);
+	--btn-x-padding: 0.5rem;
+	--btn-y-padding: 0.5rem;
+	--btn-font-size: 1.2rem;
+	--btn-background-color: black;
+	--btn-foreground-color: white;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: var(--primary-font-family);
+	font-size: var(--canvas-font-size);
+	background-color: var(--table-background);
+	color: var(--table-foreground);
+}
+
+header {
+	font-family: var(--secondary-font-family);
+	font-size: 2rem;
+	line-height: var(--canvas-header-height);
+	height: var(--canvas-header-height);
+	background-color: darkgreen;
+}
+
+footer {
+	height: var(--canvas-footer-height);
+	line-height: var(--canvas-footer-height);
+	background-color: darkviolet;
+}
+
+main {
+	height: calc(
+		100vh - var(--canvas-header-height) - var(--canvas-footer-height)
+	);
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	align-items: center;
+	justify-content: center;
+}
+
+.dice-container {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+.dice {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(3, 1fr);
+	place-items: center;
+	width: var(--dice-size);
+	height: var(--dice-size);
+	padding: var(--dice-padding);
+	aspect-ratio: 1/1;
+	background-color: var(--dice-background);
+	border-radius: calc(var(--dice-size) / 6);
+	cursor: pointer;
+}
+
+.dice-piece {
+	width: var(--dice-symbol-size);
+	height: var(--dice-symbol-size);
+	background-color: var(--dice-pots);
+	border-radius: 50%;
+	visibility: hidden;
+}
+
+.dice-equals {
+	background-color: green;
+}
+
+.btn {
+	padding: var(--btn-y-padding) var(--btn-x-padding);
+	background-color: var(--btn-background-color);
+	color: var(--btn-foreground-color);
+	border: 0;
+	border-radius: 0.5rem;
+	font-size: var(--btn-font-size);
+}
+
+.btn:disabled,
+.btn[disabled] {
+	background-color: grey;
+	color: black;
+}
+
+.stats {
+	padding: 0 0 0.5rem 0;
+	text-align: center;
+}
+
+.statsValue {
+	font-weight: bold;
+}
+
+.game-modes {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.game-mode-btn {
+	min-width: 7rem;
+	height: 3rem;
+	padding: 0.5rem 1rem;
+	border: none;
+	border-radius: calc(var(--dice-size) / 6);
+	background-color: black;
+	color: white;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.game-mode-btn.active {
+	background-color: green;
+	color: black;
+}
