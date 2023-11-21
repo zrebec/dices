@@ -1,4 +1,4 @@
-let dices = 3;
+let numberOfDices = 3;
 let diceArray = [];
 let totalRollCount = 0;
 let totalRollCountLimit = 0; // 0 for unlimited game
@@ -127,7 +127,7 @@ window.addEventListener("load", () => {
 	//document.documentElement.style.setProperty('--table-background', '#000000');
 
 	// Initaly draw a dices
-	for (let i = 1; i <= dices; i++) drawDice(i);
+	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
 
 	// Enable buttons
 	// Disable the roll button
@@ -148,15 +148,15 @@ rollButton.click(() => {
 
 		let i = 0;
 		// Calculate the timeout for each dice roll
-		const diceTimeout = timeout / dices;
+		const diceTimeout = timeout / numberOfDices;
 
 		// Repeat the dice rolling until the desired number of repeats is reached
-		for (i = 0; i < repeat * dices; i++) {
+		for (i = 0; i < repeat * numberOfDices; i++) {
 			// Wait for the specified timeout
 			await new Promise((resolve) => setTimeout(resolve, diceTimeout));
 
 			// Choose a random dice to roll
-			rollDice(Math.floor(Math.random() * dices) + 1);
+			rollDice(Math.floor(Math.random() * numberOfDices) + 1);
 		}
 
 		// Enable the roll button and plus button
@@ -200,4 +200,4 @@ rollButton.click(() => {
 });
 
 // Add new dice after click on plus button
-plusButton.click(() => drawDice(++dices));
+plusButton.click(() => drawDice(++numberOfDices));
