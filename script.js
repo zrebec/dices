@@ -1,6 +1,8 @@
 let numberOfDices = 3;
 let diceArray = [];
 let totalRollCount = 0;
+let stopwatchInterval;
+let stopwatchTime = 0;
 let totalRollCountLimit = 0; // 0 for unlimited game
 const timeout = 170;
 const repeat = 14;
@@ -97,6 +99,21 @@ const drawDice = (diceNumber) => {
 	return true;
 };
 
+const startStopwatch = () => {
+	clearInterval(stopwatchInterval);
+	stopwatchInterval = setInterval(() => {
+		stopwatchTime++;
+		const hours = String(Math.floor(stopwatchTime / 3600));
+		const minutes = String(Math.floor((stopwatchTime % 3600) / 60)).padStart(2, '0');
+		const seconds = String(stopwatchTime % 60).padStart(2, '0');
+		totalElapsedTime.textContent = `${hours}:${minutes}:${seconds}`;
+	}, 1000);
+}
+
+const stopStopwatch = () => {
+	clearInterval(stopwatchInterval);
+}
+
 const isEvenOdd = (arr) => {
 	const even = arr.every(value => value % 2 === 0);
 	const odd = arr.every(value => value % 2 !== 0);
@@ -139,6 +156,7 @@ window.addEventListener('load', () => {
 // Handle the "click" event on the roll button
 rollButton.addEventListener('click', () => {
 	document.getElementById('alert').style.display = 'none';
+	if (!stopwatchInterval) startStopwatch();
 	(async () => {
 		if (gameMode === 'pairs' && diceArray.length % 2 !== 0) {
 			document.getElementById('alert').textContent = invalidGameMode;
@@ -183,6 +201,7 @@ rollButton.addEventListener('click', () => {
 		) {
 			document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
 			document.getElementById('alert').style.display = 'none';
+			stopStopwatch(); // Stop the stopwatch
 		} else if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
 			rollButton.click();
 		} else {
@@ -198,4 +217,16 @@ rollButton.addEventListener('click', () => {
 });
 
 // Add new dice after click on plus button
-plusButton.addEventListener('click', () => drawDice(++numberOfDices));
+plusButton.addEventListener('click', () => {
+	clearInterval(stopwatchInterval);
+	diceArray = [];
+	diceContainer.innerHTML = '';
+	for (let i = 1; i <= numberOfDices; i++) drawDice(++numberOfDices);
+	statsSumValue.textContent = 0;
+	statsAvgValue.textContent = 0;
+	totalRollCountValue.textContent = 0;
+	stopwatchTime = 0; // Reset the stopwatch time
+	totalElapsedTime.textContent = '0:00:00';
+	rollButton.disabled = false;
+	plusButton.disabled = false;
+});
