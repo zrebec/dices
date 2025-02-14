@@ -1,7 +1,14 @@
 # CHANGELOG
 
-## TODO List
-- [ ] Add "Loose!" title if totalRollCountLimit is reached without any winning condition.
-- [ ] Create a function to make the titlebar flash with a new text.
-- [ ] Call the flashing titlebar function when the player wins or when totalRollCountLimit is reached without any winning condition.
-- [ ] Make the stopwatch text bigger, centered, and reposition it.
+## TODO
+[ ] Add "Loose!" title if totalRollCountLimit is reached without any winning condition.
+[ ] Make a flashing titlebar function with one input parameter (newText) and call it when you win or when totalRollCountLimit is reached without any winning condition.
+[ ] Make the stopwatch text bigger, centered, and repositioned.
+
+## Potential Logical Problems in script.js
+[ ] Ensure that the winning condition is correctly defined and checked.
+[ ] Verify that the totalRollCountLimit is properly incremented and compared.
+[ ] Check that the flashing titlebar function is called in all appropriate scenarios.
+[ ] Confirm that the stopwatch text updates correctly and is displayed in the intended position.
+[ ] Validate that all game states (win, lose, ongoing) are handled appropriately.
+[ ] Ensure that there are no infinite loops or conditions that could cause the game to hang.
