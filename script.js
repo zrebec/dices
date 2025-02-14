@@ -236,3 +236,11 @@ plusButton.addEventListener('click', () => {
 	rollButton.disabled = false;
 	plusButton.disabled = false;
 });
+addEventListener('keydown', (event) => {
+	console.log(event.key);
+	if (event.key.toUpperCase() === 'R') {
+		rollButton.click();
+	} else if (event.key === ' ') {
+		plusButton.click();
+	}
+});
