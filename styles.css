@@ -37,6 +37,7 @@ body {
 }
 
 header {
+	padding: 0 1rem;
 	font-family: var(--secondary-font-family);
 	font-size: 2rem;
 	line-height: var(--canvas-header-height);
@@ -45,15 +46,16 @@ header {
 }
 
 footer {
+	display: flex;
+	justify-content: space-between;
+	padding: 0 1rem;
 	height: var(--canvas-footer-height);
 	line-height: var(--canvas-footer-height);
 	background-color: darkviolet;
 }
 
 main {
-	height: calc(
-		100vh - var(--canvas-header-height) - var(--canvas-footer-height)
-	);
+	height: calc(100vh - var(--canvas-header-height) - var(--canvas-footer-height));
 }
 
 .content {
