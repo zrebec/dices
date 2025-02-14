@@ -1,0 +1,7 @@
+# CHANGELOG
+
+## TODO List
+- [ ] Add "Loose!" title if totalRollCountLimit is reached without any winning condition.
+- [ ] Create a function to make the titlebar flash with a new text.
+- [ ] Call the flashing titlebar function when the player wins or when totalRollCountLimit is reached without any winning condition.
+- [ ] Make the stopwatch text bigger, centered, and reposition it.
