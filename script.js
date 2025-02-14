@@ -221,7 +221,8 @@ plusButton.addEventListener('click', () => {
 	clearInterval(stopwatchInterval);
 	diceArray = [];
 	diceContainer.innerHTML = '';
-	for (let i = 1; i <= numberOfDices; i++) drawDice(++numberOfDices);
+	numberOfDices++;
+	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
 	statsSumValue.textContent = 0;
 	statsAvgValue.textContent = 0;
 	totalRollCountValue.textContent = 0;
