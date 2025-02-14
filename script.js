@@ -202,6 +202,11 @@ rollButton.addEventListener('click', () => {
 			document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
 			document.getElementById('alert').style.display = 'none';
 			stopStopwatch(); // Stop the stopwatch
+			let originalTitle = document.title;
+			let newTitle = 'Máš to!';
+			setInterval(() => {
+				document.title = document.title === newTitle ? originalTitle : newTitle;
+			}, 1000);
 		} else if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
 			rollButton.click();
 		} else {
