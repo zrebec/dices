@@ -20,72 +20,77 @@ const matrix = [
 ];
 
 // Selectors
-const diceContainer = $('#diceContainer');
-const rollButton = $('#btnRoll');
-const plusButton = $('#btnPlus');
-const statsSumValue = $('#statsSumValue');
-const statsAvgValue = $('#statsAvgValue');
-const totalRollCountValue = $('#totalRollCountValue');
-const gameModeButtons = $('.game-mode-btn');
+const diceContainer = document.getElementById('diceContainer');
+const rollButton = document.getElementById('btnRoll');
+const plusButton = document.getElementById('btnPlus');
+const statsSumValue = document.getElementById('statsSumValue');
+const statsAvgValue = document.getElementById('statsAvgValue');
+const totalRollCountValue = document.getElementById('totalRollCountValue');
+const gameModeButtons = document.querySelectorAll('.game-mode-btn');
 
 // Event Listeners
-gameModeButtons.click(function () {
-	// Remove active class from all buttons
-	gameModeButtons.removeClass('active');
+gameModeButtons.forEach(button => {
+	button.addEventListener('click', function () {
+		// Remove active class from all buttons
+		gameModeButtons.forEach(btn => btn.classList.remove('active'));
 
-	// Add active class to clicked button
-	$(this).addClass('active');
+		// Add active class to clicked button
+		this.classList.add('active');
 
-	// Change the game mode
-	gameMode = $(this).attr('data-mode');
+		// Change the game mode
+		gameMode = this.getAttribute('data-mode');
+	});
 });
 
 // Initialization
-$(document).ready(function () {
+document.addEventListener('DOMContentLoaded', function () {
 	// Set the initial active button
-	$(`.game-mode-btn[data-mode="${gameMode}"]`).addClass('active');
+	document.querySelector(`.game-mode-btn[data-mode="${gameMode}"]`).classList.add('active');
 });
 
 const rollDice = (dice, diceObject) => {
 	// If "number" input parameter was not given, it will be random number
 	if (diceObject === undefined || diceObject === null)
-		diceObject = $(matrix).get(Math.floor(Math.random() * matrix.length));
+		diceObject = matrix[Math.floor(Math.random() * matrix.length)];
 
 	// If previous numbers on dice was equal, we must remove equal dice className
-	$('.dice-container').find('.dice').removeClass('dice-equals');
-
-	// If previous numbers on dice was equal, we must remove equal dice className
-	$('.dice-container').find('.dice').removeClass('dice-equals');
+	document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.remove('dice-equals'));
 
 	// Check if the dice exists in the "diceArray" array, and add or update it
-	diceArray.find((n) => n.diceNumber === dice)
-		? (diceArray.find((n) => n.diceNumber === dice).diceValue = diceObject.number)
-		: diceArray.push({ diceNumber: dice, diceValue: diceObject.number });
+	const existingDice = diceArray.find(n => n.diceNumber === dice);
+	if (existingDice) {
+		existingDice.diceValue = diceObject.number;
+	} else {
+		diceArray.push({ diceNumber: dice, diceValue: diceObject.number });
+	}
 
 	// Loop through each number in the matrix
 	for (let i = 1; i <= 9; i++) {
 		// Get the current dice piece
-		const dicePiece = $(`.dice-${dice}`).find(`.dice-piece-${i}`);
+		const dicePiece = document.querySelector(`.dice-${dice} .dice-piece-${i}`);
 
 		// If the number of specific pieces equals the number in the current cycle,
 		// it's a match and we can show the pot by setting the visibility to visible.
 		// Otherwise, we hide the pot by setting the visibility to hidden.
-		dicePiece.css('visibility', diceObject.activePieces.includes(i) ? 'visible' : 'hidden');
+		dicePiece.style.visibility = diceObject.activePieces.includes(i) ? 'visible' : 'hidden';
 	}
 };
 
 const drawDice = (diceNumber) => {
 	// Create a new element to represent the dice and add the "dice" and "dice-number" classes to the element
-	const dice = $('<div>').addClass(`dice dice-${diceNumber}`);
+	const dice = document.createElement('div');
+	dice.classList.add('dice', `dice-${diceNumber}`);
 
 	// Create nine elements to represent the dice pieces
 	for (let i = 1; i <= 9; i++) {
 		// Create a dice piece, set class and append the dice piece to the dice
-		dice.append($('<div>').addClass(`dice-piece dice-piece-${i}`));
+		const dicePiece = document.createElement('div');
+		dicePiece.classList.add('dice-piece', `dice-piece-${i}`);
+		dice.appendChild(dicePiece);
 	}
 
 	// Append the dice to the dice container element
-	diceContainer.append(dice);
+	diceContainer.appendChild(dice);
 
 	// Set number 1 for all dices at first
 	rollDice(diceNumber, matrix[0]);
@@ -93,8 +98,8 @@ const drawDice = (diceNumber) => {
 };
 
 const isEvenOdd = (arr) => {
-	const even = arr.every((value) => value % 2 === 0);
-	const odd = arr.every((value) => value % 2 !== 0);
+	const even = arr.every(value => value % 2 === 0);
+	const odd = arr.every(value => value % 2 !== 0);
 	return even || odd;
 };
 
@@ -115,32 +120,35 @@ const isPairs = (arr) => {
 };
 
 const isAllEqual = (arr) => {
-	return arr.length > 1 && arr.every((value) => value === arr[0]);
+	return arr.length > 1 && arr.every(value => value === arr[0]);
 };
 
 window.addEventListener('load', () => {
 	// Color schema
 	//document.documentElement.style.setProperty('--table-background', '#000000');
 
-	// Initaly draw a dices
+	// Initially draw dices
 	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
 
 	// Enable buttons
 	// Disable the roll button
-	$(rollButton).add(plusButton).prop({ disabled: false });
+	rollButton.disabled = false;
+	plusButton.disabled = false;
 });
 
 // Handle the "click" event on the roll button
-rollButton.click(() => {
-	$('#alert').hide();
+rollButton.addEventListener('click', () => {
+	document.getElementById('alert').style.display = 'none';
 	(async () => {
 		if (gameMode === 'pairs' && diceArray.length % 2 !== 0) {
-			$('#alert').text(invalidGameMode).show();
+			document.getElementById('alert').textContent = invalidGameMode;
+			document.getElementById('alert').style.display = 'block';
 			return;
 		}
 
 		// Disable the roll button
-		$(rollButton).add(plusButton).prop({ disabled: true });
+		rollButton.disabled = true;
+		plusButton.disabled = true;
 
 		let i = 0;
 		// Calculate the timeout for each dice roll
@@ -149,17 +157,18 @@ rollButton.click(() => {
 		// Repeat the dice rolling until the desired number of repeats is reached
 		for (i = 0; i < repeat * numberOfDices; i++) {
 			// Wait for the specified timeout
-			await new Promise((resolve) => setTimeout(resolve, diceTimeout));
+			await new Promise(resolve => setTimeout(resolve, diceTimeout));
 
 			// Choose a random dice to roll
 			rollDice(Math.floor(Math.random() * numberOfDices) + 1);
 		}
 
 		// Enable the roll button and plus button
-		$(rollButton).add(plusButton).prop({ disabled: false });
+		rollButton.disabled = false;
+		plusButton.disabled = false;
 
-		// Check about all symbols are equal
-		const diceValues = diceArray.map((dice) => dice.diceValue);
+		// Check if all symbols are equal
+		const diceValues = diceArray.map(dice => dice.diceValue);
 		const allEqual = isAllEqual(diceValues);
 		const seq = isSequence(diceValues);
 		const evenOdd = isEvenOdd(diceValues);
@@ -172,22 +181,21 @@ rollButton.click(() => {
 			(gameMode === 'pairs' && pairs && diceValues.length % 2 === 0) ||
 			(gameMode === 'all' && (allEqual || seq || evenOdd || (pairs && diceValues.length % 2 === 0)))
 		) {
-			$('.dice-container').find('.dice').addClass('dice-equals');
-			$('#alert').hide();
+			document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
+			document.getElementById('alert').style.display = 'none';
 		} else if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
 			rollButton.click();
 		} else {
-			$('#alert').text(totalRollCountLimitExceeded).show();
+			document.getElementById('alert').textContent = totalRollCountLimitExceeded;
+			document.getElementById('alert').style.display = 'block';
 		}
 
-		// Calc statistics
-		statsSumValue.text(diceArray.reduce((acc, dice) => acc + dice.diceValue, 0));
-		statsAvgValue.text(
-			(diceArray.reduce((acc, dice) => acc + dice.diceValue, 0) / diceArray.length).toFixed(2)
-		);
-		totalRollCountValue.text(++totalRollCount);
+		// Calculate statistics
+		statsSumValue.textContent = diceArray.reduce((acc, dice) => acc + dice.diceValue, 0);
+		statsAvgValue.textContent = (diceArray.reduce((acc, dice) => acc + dice.diceValue, 0) / diceArray.length).toFixed(2);
+		totalRollCountValue.textContent = ++totalRollCount;
 	})();
 });
 
 // Add new dice after click on plus button
-plusButton.click(() => drawDice(++numberOfDices));
+plusButton.addEventListener('click', () => drawDice(++numberOfDices));
