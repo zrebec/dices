@@ -3,7 +3,9 @@ let diceArray = [];
 let totalRollCount = 0;
 let stopwatchInterval;
 let stopwatchTime = 0;
-let totalRollCountLimit = 0; // 0 for unlimited game
+let gameIsRunning = false;
+let interval;
+let totalRollCountLimit = 5; // 0 for unlimited game
 const timeout = 170;
 const repeat = 14;
 let gameMode = 'allEqual'; // Possible values: 'allEqual', 'sequence', 'evenOdd', 'all', 'pairs'
@@ -140,6 +142,12 @@ const isAllEqual = (arr) => {
 	return arr.length > 1 && arr.every(value => value === arr[0]);
 };
 
+const flashTitle = (title, flashing = true) => {
+	if (!flashing) { document.title = title; return; clearInterval(interval); }
+	let originalTitle = document.title;
+	let interval = setInterval(() => { document.title = document.title === title ? originalTitle : title; }, 1000);
+};
+
 window.addEventListener('load', () => {
 	// Color schema
 	//document.documentElement.style.setProperty('--table-background', '#000000');
@@ -156,7 +164,15 @@ window.addEventListener('load', () => {
 // Handle the "click" event on the roll button
 rollButton.addEventListener('click', () => {
 	document.getElementById('alert').style.display = 'none';
-	if (!stopwatchInterval) startStopwatch();
+	if (!gameIsRunning) {
+		startStopwatch();
+		totalRollCount = 0;
+		totalRollCountValue.textContent = '0';
+		flashTitle('Hod kockou!', false);
+		clearInterval(interval);
+		// TODO: Stop the flashing title after the game rubns again
+		gameIsRunning = true;
+	}
 	(async () => {
 		if (gameMode === 'pairs' && diceArray.length % 2 !== 0) {
 			document.getElementById('alert').textContent = invalidGameMode;
@@ -202,16 +218,16 @@ rollButton.addEventListener('click', () => {
 			document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
 			document.getElementById('alert').style.display = 'none';
 			stopStopwatch(); // Stop the stopwatch
-			let originalTitle = document.title;
-			let newTitle = 'Máš to!';
-			setInterval(() => {
-				document.title = document.title === newTitle ? originalTitle : newTitle;
-			}, 1000);
+			flashTitle('Vyhral si!'); // Flash the title
+			gameIsRunning = false;
 		} else if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
 			rollButton.click();
 		} else {
 			document.getElementById('alert').textContent = totalRollCountLimitExceeded;
 			document.getElementById('alert').style.display = 'block';
+			stopStopwatch();
+			flashTitle('Neúspech!');
+			gameIsRunning = false;
 		}
 
 		// Calculate statistics
