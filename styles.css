@@ -122,6 +122,18 @@ main {
 	font-weight: bold;
 }
 
+.timer {
+	font-size: 5rem;
+}
+
+.buttons {
+	display: flex;
+	gap: 1rem;
+	width: 100%;
+	justify-content: center;
+}
+
+
 .game-modes {
 	display: flex;
 	gap: 0.5rem;
