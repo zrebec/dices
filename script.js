@@ -1,11 +1,11 @@
 let numberOfDices = 3;
 let diceArray = [];
-let totalRollCount = 0;
+let totalRollCount = 1;
 let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-let totalRollCountLimit = 5; // 0 for unlimited game
+let totalRollCountLimit = 0; // 0 for unlimited game
 const timeout = 170;
 const repeat = 14;
 let gameMode = 'allEqual'; // Possible values: 'allEqual', 'sequence', 'evenOdd', 'all', 'pairs'
@@ -105,7 +105,7 @@ const startStopwatch = () => {
 	clearInterval(stopwatchInterval);
 	stopwatchInterval = setInterval(() => {
 		stopwatchTime++;
-		const hours = String(Math.floor(stopwatchTime / 3600));
+		const hours = String(Math.floor(stopwatchTime / 3600)).padStart(2, '0');
 		const minutes = String(Math.floor((stopwatchTime % 3600) / 60)).padStart(2, '0');
 		const seconds = String(stopwatchTime % 60).padStart(2, '0');
 		totalElapsedTime.textContent = `${hours}:${minutes}:${seconds}`;
@@ -166,7 +166,7 @@ rollButton.addEventListener('click', () => {
 	document.getElementById('alert').style.display = 'none';
 	if (!gameIsRunning) {
 		startStopwatch();
-		totalRollCount = 0;
+		totalRollCount = 1;
 		totalRollCountValue.textContent = '0';
 		flashTitle('Hod kockou!', false);
 		clearInterval(interval);
@@ -248,7 +248,7 @@ plusButton.addEventListener('click', () => {
 	statsAvgValue.textContent = 0;
 	totalRollCountValue.textContent = 0;
 	stopwatchTime = 0; // Reset the stopwatch time
-	totalElapsedTime.textContent = '0:00:00';
+	totalElapsedTime.textContent = '00:00:00';
 	rollButton.disabled = false;
 	plusButton.disabled = false;
 });
