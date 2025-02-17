@@ -192,35 +192,36 @@ const startGame = () => {
 	}
 }
 
-const rollDices = async () => {
-	if (!validateGameMode()) return;
+const repeatRoll = () => {
+	if(totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
+		rollDices();
+	} else {
+		document.getElementById('alert').textContent = totalRollCountLimitExceeded;
+		document.getElementById('alert').style.display = 'block';
+		stopStopwatch();
+		flashTitle('Neúspech!');
+		gameIsRunning = false;
+	}
+};
 
-	// Disable the roll button
-	toggleButtons(false);
-
+const performRolls = async () => {
 	let i = 0;
-	// Calculate the timeout for each dice roll
 	const diceTimeout = timeout / numberOfDices;
 
 	for (i = 0; i < repeat * numberOfDices; i++) {
-		// Wait for the specified timeout
 		await new Promise(resolve => setTimeout(resolve, diceTimeout));
-
-		// Choose a random dice to roll
 		rollDice(Math.floor(Math.random() * numberOfDices) + 1);
 	}
+}
 
-	// Enable the roll button and plus button
-	toggleButtons(true);
-
-	// Check if all symbols are equal
+const gameCheckResult = () => {
 	const diceValues = diceArray.map(dice => dice.diceValue);
 	const allEqual = isAllEqual(diceValues);
 	const seq = isSequence(diceValues);
 	const evenOdd = isEvenOdd(diceValues);
 	const pairs = isPairs(diceValues);
 
-	if(
+	if (
 		(gameMode === 'allEqual' && allEqual) ||
 		(gameMode === 'sequence' && seq) ||
 		(gameMode === 'evenOdd' && evenOdd) ||
@@ -229,23 +230,33 @@ const rollDices = async () => {
 	) {
 		document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
 		document.getElementById('alert').style.display = 'none';
-		stopStopwatch(); // Stop the stopwatch
-		flashTitle('Vyhral si!'); // Flash the title
-		gameIsRunning = false;
-	} else if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
-		rollButton.click();
-	} else {
-		document.getElementById('alert').textContent = totalRollCountLimitExceeded;
-		document.getElementById('alert').style.display = 'block';
 		stopStopwatch();
-		flashTitle('Neúspech!');
+		flashTitle('Vyhral si!');
 		gameIsRunning = false;
+	} else {
+		repeatRoll();
 	}
+}
 
-	// Calculate statistics
+const updateStatistics = () => {
 	statsSumValue.textContent = diceArray.reduce((acc, dice) => acc + dice.diceValue, 0);
 	statsAvgValue.textContent = (diceArray.reduce((acc, dice) => acc + dice.diceValue, 0) / diceArray.length).toFixed(2);
 	totalRollCountValue.textContent = ++totalRollCount;
+}
+
+const rollDices = async () => {
+	if (!validateGameMode()) return;
+
+	// Disable the roll button
+	toggleButtons(false);
+
+	await performRolls();
+
+	// Enable the roll button and plus button
+	toggleButtons(true);
+
+	gameCheckResult();
+	updateStatistics();
 }
 
 // Handle the "click" event on the roll button
