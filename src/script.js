@@ -156,85 +156,107 @@ window.addEventListener('load', () => {
 	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
 
 	// Enable buttons
-	// Disable the roll button
-	rollButton.disabled = false;
-	plusButton.disabled = false;
+	toggleButtons(true);
 });
 
-// Handle the "click" event on the roll button
-rollButton.addEventListener('click', () => {
+const validateGameMode = () => {
+	if(gameMode === 'pairs' && diceArray.length % 2 !== 0) {
+		document.getElementById('alert').textContent = invalidGameMode;
+		document.getElementById('alert').style.display = 'block';
+		return false;
+	}
 	document.getElementById('alert').style.display = 'none';
-	if (!gameIsRunning) {
+	return true;
+}
+
+const resetStopwatch = () => {
+	stopwatchTime = 0;
+	totalElapsedTime.textContent = '00:00:00';
+}
+
+// Function to enable or disable buttons
+const toggleButtons = (enabled) => {
+	rollButton.disabled = !enabled;
+	plusButton.disabled = !enabled;
+}
+
+const startGame = () => {
+	if (!gameIsRunning && validateGameMode) {
 		startStopwatch();
 		totalRollCount = 1;
 		totalRollCountValue.textContent = '0';
 		flashTitle('Hod kockou!', false);
 		clearInterval(interval);
-		// TODO: Stop the flashing title after the game rubns again
+		resetStopwatch();
 		gameIsRunning = true;
 	}
-	(async () => {
-		if (gameMode === 'pairs' && diceArray.length % 2 !== 0) {
-			document.getElementById('alert').textContent = invalidGameMode;
-			document.getElementById('alert').style.display = 'block';
-			return;
-		}
+}
 
-		// Disable the roll button
-		rollButton.disabled = true;
-		plusButton.disabled = true;
+const rollDices = async () => {
+	if (!validateGameMode()) return;
 
-		let i = 0;
-		// Calculate the timeout for each dice roll
-		const diceTimeout = timeout / numberOfDices;
+	// Disable the roll button
+	toggleButtons(false);
 
-		// Repeat the dice rolling until the desired number of repeats is reached
-		for (i = 0; i < repeat * numberOfDices; i++) {
-			// Wait for the specified timeout
-			await new Promise(resolve => setTimeout(resolve, diceTimeout));
+	let i = 0;
+	// Calculate the timeout for each dice roll
+	const diceTimeout = timeout / numberOfDices;
 
-			// Choose a random dice to roll
-			rollDice(Math.floor(Math.random() * numberOfDices) + 1);
-		}
+	for (i = 0; i < repeat * numberOfDices; i++) {
+		// Wait for the specified timeout
+		await new Promise(resolve => setTimeout(resolve, diceTimeout));
 
-		// Enable the roll button and plus button
-		rollButton.disabled = false;
-		plusButton.disabled = false;
+		// Choose a random dice to roll
+		rollDice(Math.floor(Math.random() * numberOfDices) + 1);
+	}
 
-		// Check if all symbols are equal
-		const diceValues = diceArray.map(dice => dice.diceValue);
-		const allEqual = isAllEqual(diceValues);
-		const seq = isSequence(diceValues);
-		const evenOdd = isEvenOdd(diceValues);
-		const pairs = isPairs(diceValues);
+	// Enable the roll button and plus button
+	toggleButtons(true);
 
-		if (
-			(gameMode === 'allEqual' && allEqual) ||
-			(gameMode === 'sequence' && seq) ||
-			(gameMode === 'evenOdd' && evenOdd) ||
-			(gameMode === 'pairs' && pairs && diceValues.length % 2 === 0) ||
-			(gameMode === 'all' && (allEqual || seq || evenOdd || (pairs && diceValues.length % 2 === 0)))
-		) {
-			document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
-			document.getElementById('alert').style.display = 'none';
-			stopStopwatch(); // Stop the stopwatch
-			flashTitle('Vyhral si!'); // Flash the title
-			gameIsRunning = false;
-		} else if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
-			rollButton.click();
-		} else {
-			document.getElementById('alert').textContent = totalRollCountLimitExceeded;
-			document.getElementById('alert').style.display = 'block';
-			stopStopwatch();
-			flashTitle('Neúspech!');
-			gameIsRunning = false;
-		}
+	// Check if all symbols are equal
+	const diceValues = diceArray.map(dice => dice.diceValue);
+	const allEqual = isAllEqual(diceValues);
+	const seq = isSequence(diceValues);
+	const evenOdd = isEvenOdd(diceValues);
+	const pairs = isPairs(diceValues);
 
-		// Calculate statistics
-		statsSumValue.textContent = diceArray.reduce((acc, dice) => acc + dice.diceValue, 0);
-		statsAvgValue.textContent = (diceArray.reduce((acc, dice) => acc + dice.diceValue, 0) / diceArray.length).toFixed(2);
-		totalRollCountValue.textContent = ++totalRollCount;
-	})();
+	if(
+		(gameMode === 'allEqual' && allEqual) ||
+		(gameMode === 'sequence' && seq) ||
+		(gameMode === 'evenOdd' && evenOdd) ||
+		(gameMode === 'pairs' && pairs && diceValues.length % 2 === 0) ||
+		(gameMode === 'all' && (allEqual || seq || evenOdd || (pairs && diceValues.length % 2 === 0)))
+	) {
+		document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
+		document.getElementById('alert').style.display = 'none';
+		stopStopwatch(); // Stop the stopwatch
+		flashTitle('Vyhral si!'); // Flash the title
+		gameIsRunning = false;
+	} else if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
+		rollButton.click();
+	} else {
+		document.getElementById('alert').textContent = totalRollCountLimitExceeded;
+		document.getElementById('alert').style.display = 'block';
+		stopStopwatch();
+		flashTitle('Neúspech!');
+		gameIsRunning = false;
+	}
+
+	// Calculate statistics
+	statsSumValue.textContent = diceArray.reduce((acc, dice) => acc + dice.diceValue, 0);
+	statsAvgValue.textContent = (diceArray.reduce((acc, dice) => acc + dice.diceValue, 0) / diceArray.length).toFixed(2);
+	totalRollCountValue.textContent = ++totalRollCount;
+}
+
+// Handle the "click" event on the roll button
+rollButton.addEventListener('click', () => {
+	if (validateGameMode()) {
+	document.getElementById('alert').style.display = 'none';
+	startGame();
+	rollDices();
+	} else {
+		toggleButtons(true); // Enable buttons if the game mode is invalid
+	}
 });
 
 // Add new dice after click on plus button
@@ -247,11 +269,12 @@ plusButton.addEventListener('click', () => {
 	statsSumValue.textContent = 0;
 	statsAvgValue.textContent = 0;
 	totalRollCountValue.textContent = 0;
-	stopwatchTime = 0; // Reset the stopwatch time
-	totalElapsedTime.textContent = '00:00:00';
-	rollButton.disabled = false;
-	plusButton.disabled = false;
+	resetStopwatch();
+	toggleButtons(true);
+
+	if (!validateGameMode()) return;
 });
+
 addEventListener('keydown', (event) => {
 	console.log(event.key);
 	if (event.key.toUpperCase() === 'R') {
