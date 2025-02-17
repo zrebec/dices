@@ -1,3 +1,5 @@
+import { isAllEqual, isPairs, isSequence, isEvenOdd } from './modules/conditions.js';
+
 let numberOfDices = 3;
 let diceArray = [];
 let totalRollCount = 1;
@@ -117,32 +119,6 @@ const stopStopwatch = () => {
 	clearInterval(stopwatchInterval);
 }
 
-const isEvenOdd = (arr) => {
-	const even = arr.every(value => value % 2 === 0);
-	const odd = arr.every(value => value % 2 !== 0);
-	return even || odd;
-};
-
-const isSequence = (arr) => {
-	const sortedArr = [...arr].sort((a, b) => a - b);
-	for (let i = 1; i < sortedArr.length; i++) {
-		if (sortedArr[i] - sortedArr[i - 1] !== 1) return false;
-	}
-	return true;
-};
-
-const isPairs = (arr) => {
-	const sortedArr = [...arr].sort((a, b) => a - b);
-	for (let i = 0; i < sortedArr.length; i += 2) {
-		if (sortedArr[i] !== sortedArr[i + 1]) return false;
-	}
-	return true;
-};
-
-const isAllEqual = (arr) => {
-	return arr.length > 1 && arr.every(value => value === arr[0]);
-};
-
 const flashTitle = (title, flashing = true) => {
 	if (!flashing) { document.title = title; clearInterval(interval); return; }
 	interval = setInterval(() => { document.title = document.title === title ? originalTitle : title; }, 1000);
@@ -212,28 +188,23 @@ const performRolls = async () => {
 	}
 }
 
+const wonTheGame = () => {
+	document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
+	document.getElementById('alert').style.display = 'none';
+	stopStopwatch();
+	flashTitle('Vyhral si!');
+	gameIsRunning = false;
+}
+
 const gameCheckResult = () => {
 	const diceValues = diceArray.map(dice => dice.diceValue);
-	const allEqual = isAllEqual(diceValues);
-	const seq = isSequence(diceValues);
-	const evenOdd = isEvenOdd(diceValues);
-	const pairs = isPairs(diceValues);
 
-	if (
-		(gameMode === 'allEqual' && allEqual) ||
-		(gameMode === 'sequence' && seq) ||
-		(gameMode === 'evenOdd' && evenOdd) ||
-		(gameMode === 'pairs' && pairs && diceValues.length % 2 === 0) ||
-		(gameMode === 'anything' && (allEqual || seq || evenOdd || (pairs && diceValues.length % 2 === 0)))
-	) {
-		document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
-		document.getElementById('alert').style.display = 'none';
-		stopStopwatch();
-		flashTitle('Vyhral si!');
-		gameIsRunning = false;
-	} else {
-		repeatRoll();
-	}
+	if (gameMode === 'allEquals' && isAllEqual(diceValues)) wonTheGame();
+	else if(gameMode === 'sequence' && isSequence(diceValues)) wonTheGame();
+	else if(gameMode === 'evenOdd' && isEvenOdd(diceValues)) wonTheGame();
+	else if(gameMode === 'pairs' && isPairs(diceValues) && diceValues.length % 2 === 0) wonTheGame();
+	else if(gameMode === 'anything' && (allEqual || seq || evenOdd || (pairs && diceValues.length % 2 === 0))) wonTheGame();
+	else repeatRoll();
 }
 
 const updateStatistics = () => {
