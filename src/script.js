@@ -9,7 +9,7 @@ let totalRollCountLimit = 0; // 0 for unlimited game
 const originalTitle = document.title;
 const timeout = 170;
 const repeat = 14;
-let gameMode = 'allEqual'; // Possible values: 'allEqual', 'sequence', 'evenOdd', 'all', 'pairs'
+let gameMode = 'allEqual'; // Possible values: 'allEqual', 'sequence', 'evenOdd', 'pairs', 'anything'
 
 // messages for translations
 const totalRollCountLimitExceeded = 'Naplnený maximálny počet hodov a nebol dosiahnutý požadovaný výsledok';
@@ -224,7 +224,7 @@ const gameCheckResult = () => {
 		(gameMode === 'sequence' && seq) ||
 		(gameMode === 'evenOdd' && evenOdd) ||
 		(gameMode === 'pairs' && pairs && diceValues.length % 2 === 0) ||
-		(gameMode === 'all' && (allEqual || seq || evenOdd || (pairs && diceValues.length % 2 === 0)))
+		(gameMode === 'anything' && (allEqual || seq || evenOdd || (pairs && diceValues.length % 2 === 0)))
 	) {
 		document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
 		document.getElementById('alert').style.display = 'none';
