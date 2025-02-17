@@ -6,6 +6,7 @@ let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
 let totalRollCountLimit = 0; // 0 for unlimited game
+const originalTitle = document.title;
 const timeout = 170;
 const repeat = 14;
 let gameMode = 'allEqual'; // Possible values: 'allEqual', 'sequence', 'evenOdd', 'all', 'pairs'
@@ -143,15 +144,11 @@ const isAllEqual = (arr) => {
 };
 
 const flashTitle = (title, flashing = true) => {
-	if (!flashing) { document.title = title; return; clearInterval(interval); }
-	let originalTitle = document.title;
-	let interval = setInterval(() => { document.title = document.title === title ? originalTitle : title; }, 1000);
+	if (!flashing) { document.title = title; clearInterval(interval); return; }
+	interval = setInterval(() => { document.title = document.title === title ? originalTitle : title; }, 1000);
 };
 
 window.addEventListener('load', () => {
-	// Color schema
-	//document.documentElement.style.setProperty('--table-background', '#000000');
-
 	// Initially draw dices
 	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
 
@@ -189,6 +186,7 @@ const startGame = () => {
 		clearInterval(interval);
 		resetStopwatch();
 		gameIsRunning = true;
+		document.title = originalTitle;
 	}
 }
 
@@ -259,6 +257,19 @@ const rollDices = async () => {
 	updateStatistics();
 }
 
+const addNewDice = () => {
+	clearInterval(stopwatchInterval);
+	diceArray = [];
+	diceContainer.innerHTML = '';
+	numberOfDices++;
+	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
+	statsSumValue.textContent = 0;
+	statsAvgValue.textContent = 0;
+	totalRollCountValue.textContent = 0;
+	resetStopwatch();
+	toggleButtons(true);
+}
+
 // Handle the "click" event on the roll button
 rollButton.addEventListener('click', () => {
 	if (validateGameMode()) {
@@ -272,22 +283,13 @@ rollButton.addEventListener('click', () => {
 
 // Add new dice after click on plus button
 plusButton.addEventListener('click', () => {
-	clearInterval(stopwatchInterval);
-	diceArray = [];
-	diceContainer.innerHTML = '';
-	numberOfDices++;
-	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
-	statsSumValue.textContent = 0;
-	statsAvgValue.textContent = 0;
-	totalRollCountValue.textContent = 0;
-	resetStopwatch();
-	toggleButtons(true);
-
-	if (!validateGameMode()) return;
+	addNewDice();
+	if(!validateGameMode()) return;
+	clearInterval(interval);
+	document.title = originalTitle;
 });
 
 addEventListener('keydown', (event) => {
-	console.log(event.key);
 	if (event.key.toUpperCase() === 'R') {
 		rollButton.click();
 	} else if (event.key === ' ') {
