@@ -1,6 +1,6 @@
 import { isAllEqual, isPairs, isSequence, isEvenOdd } from './modules/conditions.js';
 
-let numberOfDices = 3;
+let numberOfDices = 2;
 let diceArray = [];
 let totalRollCount = 1;
 let stopwatchInterval;
@@ -197,13 +197,13 @@ const wonTheGame = () => {
 }
 
 const gameCheckResult = () => {
-	const diceValues = diceArray.map(dice => dice.diceValue);
+	  const diceValues = diceArray.map(dice => dice.diceValue);
 
-	if (gameMode === 'allEquals' && isAllEqual(diceValues)) wonTheGame();
+	if (gameMode === 'allEqual' && isAllEqual(diceValues)) wonTheGame();
 	else if(gameMode === 'sequence' && isSequence(diceValues)) wonTheGame();
 	else if(gameMode === 'evenOdd' && isEvenOdd(diceValues)) wonTheGame();
 	else if(gameMode === 'pairs' && isPairs(diceValues) && diceValues.length % 2 === 0) wonTheGame();
-	else if(gameMode === 'anything' && (allEqual || seq || evenOdd || (pairs && diceValues.length % 2 === 0))) wonTheGame();
+	else if(gameMode === 'anything' && (isAllEqual(diceValues) || isSequence(diceValues) || isEvenOdd(diceValues) || (isPairs(diceValues) && diceValues.length % 2 === 0))) wonTheGame();
 	else repeatRoll();
 }
 
