@@ -32,8 +32,8 @@ The game supports the following modes:
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/dice-roller-game.git
-   cd dice-roller-game
+   git clone https://github.com/zrebec/dices.git
+   cd dices
    ```
 
 2. Install dependencies:
