@@ -133,7 +133,7 @@ window.addEventListener('load', () => {
 });
 
 const validateGameMode = () => {
-	if(gameMode === 'pairs' && diceArray.length % 2 !== 0) {
+	if (gameMode === 'pairs' && diceArray.length % 2 !== 0) {
 		document.getElementById('alert').textContent = invalidGameMode;
 		document.getElementById('alert').style.display = 'block';
 		return false;
@@ -167,7 +167,7 @@ const startGame = () => {
 }
 
 const repeatRoll = () => {
-	if(totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
+	if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
 		rollDices();
 	} else {
 		document.getElementById('alert').textContent = totalRollCountLimitExceeded;
@@ -197,13 +197,13 @@ const wonTheGame = () => {
 }
 
 const gameCheckResult = () => {
-	  const diceValues = diceArray.map(dice => dice.diceValue);
+	const diceValues = diceArray.map(dice => dice.diceValue);
 
 	if (gameMode === 'allEqual' && isAllEqual(diceValues)) wonTheGame();
-	else if(gameMode === 'sequence' && isSequence(diceValues)) wonTheGame();
-	else if(gameMode === 'evenOdd' && isEvenOdd(diceValues)) wonTheGame();
-	else if(gameMode === 'pairs' && isPairs(diceValues) && diceValues.length % 2 === 0) wonTheGame();
-	else if(gameMode === 'anything' && (isAllEqual(diceValues) || isSequence(diceValues) || isEvenOdd(diceValues) || (isPairs(diceValues) && diceValues.length % 2 === 0))) wonTheGame();
+	else if (gameMode === 'sequence' && isSequence(diceValues)) wonTheGame();
+	else if (gameMode === 'evenOdd' && isEvenOdd(diceValues)) wonTheGame();
+	else if (gameMode === 'pairs' && isPairs(diceValues) && diceValues.length % 2 === 0) wonTheGame();
+	else if (gameMode === 'anything' && (isAllEqual(diceValues) || isSequence(diceValues) || isEvenOdd(diceValues) || (isPairs(diceValues) && diceValues.length % 2 === 0))) wonTheGame();
 	else repeatRoll();
 }
 
@@ -244,9 +244,9 @@ const addNewDice = () => {
 // Handle the "click" event on the roll button
 rollButton.addEventListener('click', () => {
 	if (validateGameMode()) {
-	document.getElementById('alert').style.display = 'none';
-	startGame();
-	rollDices();
+		document.getElementById('alert').style.display = 'none';
+		startGame();
+		rollDices();
 	} else {
 		toggleButtons(true); // Enable buttons if the game mode is invalid
 	}
@@ -255,7 +255,7 @@ rollButton.addEventListener('click', () => {
 // Add new dice after click on plus button
 plusButton.addEventListener('click', () => {
 	addNewDice();
-	if(!validateGameMode()) return;
+	if (!validateGameMode()) return;
 	clearInterval(interval);
 	document.title = originalTitle;
 });
