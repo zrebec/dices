@@ -199,11 +199,13 @@ const wonTheGame = () => {
 const gameCheckResult = () => {
 	const diceValues = diceArray.map(dice => dice.diceValue);
 
-	if (gameMode === 'allEqual' && isAllEqual(diceValues)) wonTheGame();
-	else if (gameMode === 'sequence' && isSequence(diceValues)) wonTheGame();
-	else if (gameMode === 'evenOdd' && isEvenOdd(diceValues)) wonTheGame();
-	else if (gameMode === 'pairs' && isPairs(diceValues) && diceValues.length % 2 === 0) wonTheGame();
-	else if (gameMode === 'anything' && (isAllEqual(diceValues) || isSequence(diceValues) || isEvenOdd(diceValues) || (isPairs(diceValues) && diceValues.length % 2 === 0))) wonTheGame();
+	if (
+		(gameMode === 'allEqual' && isAllEqual(diceValues)) ||
+		(gameMode === 'sequence' && isSequence(diceValues)) ||
+		(gameMode === 'evenOdd' && isEvenOdd(diceValues)) ||
+		(gameMode === 'pairs' && hasPairsLength && isPairs(diceValues)) ||
+		(gameMode === 'anything' && (isAllEqual(diceValues) || isSequence(diceValues) || isEvenOdd(diceValues) || (hasPairsLength && isPairs(diceValues))))
+	) wonTheGame();
 	else repeatRoll();
 }
 
