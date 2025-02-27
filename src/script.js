@@ -154,7 +154,7 @@ const toggleButtons = (enabled) => {
 }
 
 const startGame = () => {
-	if (!gameIsRunning && validateGameMode) {
+	if (!gameIsRunning && validateGameMode()) {
 		startStopwatch();
 		totalRollCount = 1;
 		totalRollCountValue.textContent = '0';
