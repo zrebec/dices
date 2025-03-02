@@ -1,13 +1,13 @@
 import { isAllEqual, isPairs, isSequence, isEvenOdd } from './modules/conditions.js';
 
-let numberOfDices = 2;
+let numberOfDices = 3;
 let diceArray = [];
 let totalRollCount = 1;
 let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-let totalRollCountLimit = 0; // 0 for unlimited game
+const totalRollCountLimit = 0; // 0 for unlimited game
 const originalTitle = document.title;
 const timeout = 170;
 const repeat = 14;
@@ -55,30 +55,20 @@ document.addEventListener('DOMContentLoaded', function () {
 	document.querySelector(`.game-mode-btn[data-mode="${gameMode}"]`).classList.add('active');
 });
 
-const rollDice = (dice, diceObject) => {
-	// If "number" input parameter was not given, it will be random number
-	if (diceObject === undefined || diceObject === null)
-		diceObject = matrix[Math.floor(Math.random() * matrix.length)];
-
+const rollDice = (dice, diceObject = matrix[Math.floor(Math.random() * matrix.length)]) => {
 	// If previous numbers on dice was equal, we must remove equal dice className
 	document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.remove('dice-equals'));
 
 	// Check if the dice exists in the "diceArray" array, and add or update it
 	const existingDice = diceArray.find(n => n.diceNumber === dice);
-	if (existingDice) {
-		existingDice.diceValue = diceObject.number;
-	} else {
-		diceArray.push({ diceNumber: dice, diceValue: diceObject.number });
-	}
+	existingDice ? existingDice.diceValue = diceObject.number : diceArray.push({ diceNumber: dice, diceValue: diceObject.number });
 
 	// Loop through each number in the matrix
 	for (let i = 1; i <= 9; i++) {
 		// Get the current dice piece
 		const dicePiece = document.querySelector(`.dice-${dice} .dice-piece-${i}`);
 
-		// If the number of specific pieces equals the number in the current cycle,
-		// it's a match and we can show the pot by setting the visibility to visible.
-		// Otherwise, we hide the pot by setting the visibility to hidden.
+		// Show or hide the pot by setting the visibility
 		dicePiece.style.visibility = diceObject.activePieces.includes(i) ? 'visible' : 'hidden';
 	}
 };
@@ -179,12 +169,13 @@ const repeatRoll = () => {
 };
 
 const performRolls = async () => {
-	let i = 0;
 	const diceTimeout = timeout / numberOfDices;
+	const totalRolls = repeat * numberOfDices;
 
-	for (i = 0; i < repeat * numberOfDices; i++) {
+	for (let i = 0; i < totalRolls; i++) {
 		await new Promise(resolve => setTimeout(resolve, diceTimeout));
-		rollDice(Math.floor(Math.random() * numberOfDices) + 1);
+		const randomDiceNumber = Math.floor(Math.random() * numberOfDices) + 1;
+		rollDice(randomDiceNumber);
 	}
 }
 
@@ -198,6 +189,7 @@ const wonTheGame = () => {
 
 const gameCheckResult = () => {
 	const diceValues = diceArray.map(dice => dice.diceValue);
+	const hasPairsLength = diceArray.length % 2 === 0;
 
 	if (
 		(gameMode === 'allEqual' && isAllEqual(diceValues)) ||
@@ -210,8 +202,9 @@ const gameCheckResult = () => {
 }
 
 const updateStatistics = () => {
-	statsSumValue.textContent = diceArray.reduce((acc, dice) => acc + dice.diceValue, 0);
-	statsAvgValue.textContent = (diceArray.reduce((acc, dice) => acc + dice.diceValue, 0) / diceArray.length).toFixed(2);
+	const sum = diceArray.reduce((acc, dice) => acc + dice.diceValue, 0);
+	statsSumValue.textContent = sum;
+	statsAvgValue.textContent = (sum / diceArray.length).toFixed(2);
 	totalRollCountValue.textContent = ++totalRollCount;
 }
 
