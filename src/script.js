@@ -36,10 +36,10 @@ const totalRollCountValue = document.getElementById('totalRollCountValue');
 const gameModeButtons = document.querySelectorAll('.game-mode-btn');
 
 // Event Listeners
-gameModeButtons.forEach(button => {
+gameModeButtons.forEach((button) => {
 	button.addEventListener('click', function () {
 		// Remove active class from all buttons
-		gameModeButtons.forEach(btn => btn.classList.remove('active'));
+		gameModeButtons.forEach((btn) => btn.classList.remove('active'));
 
 		// Add active class to clicked button
 		this.classList.add('active');
@@ -57,11 +57,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const rollDice = (dice, diceObject = matrix[Math.floor(Math.random() * matrix.length)]) => {
 	// If previous numbers on dice was equal, we must remove equal dice className
-	document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.remove('dice-equals'));
+	document
+		.querySelectorAll('.dice-container .dice')
+		.forEach((dice) => dice.classList.remove('dice-equals'));
 
 	// Check if the dice exists in the "diceArray" array, and add or update it
-	const existingDice = diceArray.find(n => n.diceNumber === dice);
-	existingDice ? existingDice.diceValue = diceObject.number : diceArray.push({ diceNumber: dice, diceValue: diceObject.number });
+	const existingDice = diceArray.find((n) => n.diceNumber === dice);
+	existingDice
+		? (existingDice.diceValue = diceObject.number)
+		: diceArray.push({ diceNumber: dice, diceValue: diceObject.number });
 
 	// Loop through each number in the matrix
 	for (let i = 1; i <= 9; i++) {
@@ -103,15 +107,21 @@ const startStopwatch = () => {
 		const seconds = String(stopwatchTime % 60).padStart(2, '0');
 		totalElapsedTime.textContent = `${hours}:${minutes}:${seconds}`;
 	}, 1000);
-}
+};
 
 const stopStopwatch = () => {
 	clearInterval(stopwatchInterval);
-}
+};
 
 const flashTitle = (title, flashing = true) => {
-	if (!flashing) { document.title = title; clearInterval(interval); return; }
-	interval = setInterval(() => { document.title = document.title === title ? originalTitle : title; }, 1000);
+	if (!flashing) {
+		document.title = title;
+		clearInterval(interval);
+		return;
+	}
+	interval = setInterval(() => {
+		document.title = document.title === title ? originalTitle : title;
+	}, 1000);
 };
 
 window.addEventListener('load', () => {
@@ -130,18 +140,18 @@ const validateGameMode = () => {
 	}
 	document.getElementById('alert').style.display = 'none';
 	return true;
-}
+};
 
 const resetStopwatch = () => {
 	stopwatchTime = 0;
 	totalElapsedTime.textContent = '00:00:00';
-}
+};
 
 // Function to enable or disable buttons
 const toggleButtons = (enabled) => {
 	rollButton.disabled = !enabled;
 	plusButton.disabled = !enabled;
-}
+};
 
 const startGame = () => {
 	if (!gameIsRunning && validateGameMode()) {
@@ -154,7 +164,7 @@ const startGame = () => {
 		gameIsRunning = true;
 		document.title = originalTitle;
 	}
-}
+};
 
 const repeatRoll = () => {
 	if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
@@ -173,22 +183,22 @@ const performRolls = async () => {
 	const totalRolls = repeat * numberOfDices;
 
 	for (let i = 0; i < totalRolls; i++) {
-		await new Promise(resolve => setTimeout(resolve, diceTimeout));
+		await new Promise((resolve) => setTimeout(resolve, diceTimeout));
 		const randomDiceNumber = Math.floor(Math.random() * numberOfDices) + 1;
 		rollDice(randomDiceNumber);
 	}
-}
+};
 
 const wonTheGame = () => {
-	document.querySelectorAll('.dice-container .dice').forEach(dice => dice.classList.add('dice-equals'));
+	document.querySelectorAll('.dice-container .dice').forEach((dice) => dice.classList.add('dice-equals'));
 	document.getElementById('alert').style.display = 'none';
 	stopStopwatch();
 	flashTitle('Vyhral si!');
 	gameIsRunning = false;
-}
+};
 
 const gameCheckResult = () => {
-	const diceValues = diceArray.map(dice => dice.diceValue);
+	const diceValues = diceArray.map((dice) => dice.diceValue);
 	const hasPairsLength = diceArray.length % 2 === 0;
 
 	if (
@@ -196,17 +206,22 @@ const gameCheckResult = () => {
 		(gameMode === 'sequence' && isSequence(diceValues)) ||
 		(gameMode === 'evenOdd' && isEvenOdd(diceValues)) ||
 		(gameMode === 'pairs' && hasPairsLength && isPairs(diceValues)) ||
-		(gameMode === 'anything' && (isAllEqual(diceValues) || isSequence(diceValues) || isEvenOdd(diceValues) || (hasPairsLength && isPairs(diceValues))))
-	) wonTheGame();
+		(gameMode === 'anything' &&
+			(isAllEqual(diceValues) ||
+				isSequence(diceValues) ||
+				isEvenOdd(diceValues) ||
+				(hasPairsLength && isPairs(diceValues))))
+	)
+		wonTheGame();
 	else repeatRoll();
-}
+};
 
 const updateStatistics = () => {
 	const sum = diceArray.reduce((acc, dice) => acc + dice.diceValue, 0);
 	statsSumValue.textContent = sum;
 	statsAvgValue.textContent = (sum / diceArray.length).toFixed(2);
 	totalRollCountValue.textContent = ++totalRollCount;
-}
+};
 
 const rollDices = async () => {
 	if (!validateGameMode()) return;
@@ -221,7 +236,7 @@ const rollDices = async () => {
 
 	gameCheckResult();
 	updateStatistics();
-}
+};
 
 const addNewDice = () => {
 	clearInterval(stopwatchInterval);
@@ -234,7 +249,7 @@ const addNewDice = () => {
 	totalRollCountValue.textContent = 0;
 	resetStopwatch();
 	toggleButtons(true);
-}
+};
 
 // Handle the "click" event on the roll button
 rollButton.addEventListener('click', () => {
