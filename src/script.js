@@ -7,13 +7,14 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.0.0';
+const version = 'v1.0.1';
 const totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
 const timeout = 170;
 const repeat = 14;
-let gameMode = 'allEqual'; // Possible values: 'allEqual', 'sequence', 'evenOdd', 'pairs', 'anything'
+const validGameModes = ['allEqual', 'pairs', 'sequence', 'evenOdd', 'anything'];
+let gameMode = 'allEqual';
 
 // messages for translations
 const totalRollCountLimitExceeded = 'Naplnený maximálny počet hodov a nebol dosiahnutý požadovaný výsledok';
@@ -50,7 +51,8 @@ gameModeButtons.forEach((button) => {
 		this.classList.add('active');
 
 		// Change the game mode
-		gameMode = this.getAttribute('data-mode');
+		const mode = this.getAttribute('data-mode');
+		if (validGameModes.includes(mode)) gameMode = mode;
 	});
 });
 
@@ -250,7 +252,7 @@ const addNewDice = () => {
 	if (numberOfDices >= maxDices) return;
 	clearInterval(stopwatchInterval);
 	diceArray = [];
-	diceContainer.innerHTML = '';
+	diceContainer.textContent = '';
 	numberOfDices++;
 	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
 	statsSumValue.textContent = 0;
