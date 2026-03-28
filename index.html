@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="game">
+        <div id="diceContainer"></div>
+        <div id="controls">
+            <button id="btnRoll">Roll</button>
+            <input type="number" id="betInput" min="1" value="1">
+            <span id="creditsDisplay">100</span>
+        </div>
+        <div id="stats">
+            <div>Sum: <span id="statsSumValue">0</span></div>
+            <div>Average: <span id="statsAvgValue">0</span></div>
+            <div>Total Rolls: <span id="totalRollCountValue">0</span></div>
+        </div>
+        <div id="alert" style="display: none;"></div>
+        <div id="gameModes">
+            <button class="game-mode-btn" data-mode="allEqual">All Equal</button>
+            <button class="game-mode-btn" data-mode="sequence">Sequence</button>
+            <button class="game-mode-btn" data-mode="evenOdd">Even/Odd</button>
+            <button class="game-mode-btn" data-mode="pairs">Pairs</button>
+            <button class="game-mode-btn" data-mode="anything">Anything</button>
+        </div>
+    </div>
+    <script src="src/script.js"></script>
+</body>
+
+</html>
