@@ -3,6 +3,7 @@ export const isAllEqual = (arr) => {
 };
 
 export const isPairs = (arr) => {
+	if (arr.length % 2 !== 0) return false;
 	const sortedArr = [...arr].sort((a, b) => a - b);
 	for (let i = 0; i < sortedArr.length; i += 2) {
 		if (sortedArr[i] !== sortedArr[i + 1]) return false;

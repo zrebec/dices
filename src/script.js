@@ -2,12 +2,14 @@ import { isAllEqual, isPairs, isSequence, isEvenOdd } from './modules/conditions
 
 let numberOfDices = 3;
 let diceArray = [];
-let totalRollCount = 1;
+let totalRollCount = 0;
 let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
+const version = 'v1.0.0';
 const totalRollCountLimit = 0; // 0 for unlimited game
+const maxDices = 10;
 const originalTitle = document.title;
 const timeout = 170;
 const repeat = 14;
@@ -33,6 +35,9 @@ const plusButton = document.getElementById('btnPlus');
 const statsSumValue = document.getElementById('statsSumValue');
 const statsAvgValue = document.getElementById('statsAvgValue');
 const totalRollCountValue = document.getElementById('totalRollCountValue');
+const totalElapsedTime = document.getElementById('totalElapsedTime');
+const alertElement = document.getElementById('alert');
+const appVersion = document.getElementById('appVersion');
 const gameModeButtons = document.querySelectorAll('.game-mode-btn');
 
 // Event Listeners
@@ -128,17 +133,20 @@ window.addEventListener('load', () => {
 	// Initially draw dices
 	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
 
+	// Set version
+	appVersion.textContent = version;
+
 	// Enable buttons
 	toggleButtons(true);
 });
 
 const validateGameMode = () => {
 	if (gameMode === 'pairs' && diceArray.length % 2 !== 0) {
-		document.getElementById('alert').textContent = invalidGameMode;
-		document.getElementById('alert').style.display = 'block';
+		alertElement.textContent = invalidGameMode;
+		alertElement.style.display = 'block';
 		return false;
 	}
-	document.getElementById('alert').style.display = 'none';
+	alertElement.style.display = 'none';
 	return true;
 };
 
@@ -156,7 +164,7 @@ const toggleButtons = (enabled) => {
 const startGame = () => {
 	if (!gameIsRunning && validateGameMode()) {
 		startStopwatch();
-		totalRollCount = 1;
+		totalRollCount = 0;
 		totalRollCountValue.textContent = '0';
 		flashTitle('Hod kockou!', false);
 		clearInterval(interval);
@@ -170,8 +178,8 @@ const repeatRoll = () => {
 	if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
 		rollDices();
 	} else {
-		document.getElementById('alert').textContent = totalRollCountLimitExceeded;
-		document.getElementById('alert').style.display = 'block';
+		alertElement.textContent = totalRollCountLimitExceeded;
+		alertElement.style.display = 'block';
 		stopStopwatch();
 		flashTitle('Neúspech!');
 		gameIsRunning = false;
@@ -191,7 +199,7 @@ const performRolls = async () => {
 
 const wonTheGame = () => {
 	document.querySelectorAll('.dice-container .dice').forEach((dice) => dice.classList.add('dice-equals'));
-	document.getElementById('alert').style.display = 'none';
+	alertElement.style.display = 'none';
 	stopStopwatch();
 	flashTitle('Vyhral si!');
 	gameIsRunning = false;
@@ -239,6 +247,7 @@ const rollDices = async () => {
 };
 
 const addNewDice = () => {
+	if (numberOfDices >= maxDices) return;
 	clearInterval(stopwatchInterval);
 	diceArray = [];
 	diceContainer.innerHTML = '';
@@ -254,7 +263,7 @@ const addNewDice = () => {
 // Handle the "click" event on the roll button
 rollButton.addEventListener('click', () => {
 	if (validateGameMode()) {
-		document.getElementById('alert').style.display = 'none';
+		alertElement.style.display = 'none';
 		startGame();
 		rollDices();
 	} else {
