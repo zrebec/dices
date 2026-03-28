@@ -45,3 +45,18 @@ test('validateGameMode pairs with odd number of dice', () => {
 	const diceValues = [3, 2, 2];
 	expect(isPairs(diceValues)).toBe(false);
 });
+
+test('isAllEqual single element returns false', () => {
+	const diceValues = [4];
+	expect(isAllEqual(diceValues)).toBe(false);
+});
+
+test('isPairs two equal dice returns true', () => {
+	const diceValues = [5, 5];
+	expect(isPairs(diceValues)).toBe(true);
+});
+
+test('isPairs empty array returns true', () => {
+	const diceValues = [];
+	expect(isPairs(diceValues)).toBe(true);
+});
