@@ -7,7 +7,7 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.2.3';
+const version = 'v1.2.4';
 let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
@@ -93,8 +93,20 @@ maxRollsInput.addEventListener('input', () => {
 	}
 });
 
+/**
+ * Game mode must not change while a game is in progress.
+ *
+ * Allowing a mode switch mid-game would let the player exploit a lucky
+ * dice state — e.g. switching from "Sequence" to "All Equal" right after
+ * a roll that happens to show identical values, winning instantly without
+ * ever rolling under the new mode's rules. Locking the selector while
+ * gameIsRunning prevents this and keeps the win condition consistent
+ * for the entire duration of the game session.
+ */
 gameModeButtons.forEach((button) => {
 	button.addEventListener('click', function () {
+		if (gameIsRunning) return;
+
 		// Remove active class from all buttons
 		gameModeButtons.forEach((btn) => btn.classList.remove('active'));
 
