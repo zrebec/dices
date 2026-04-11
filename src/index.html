@@ -60,14 +60,15 @@
     <div class="timer-wrap">
       <span id="totalElapsedTime" class="timer">00:00:00</span>
     </div>
-    <div id="alert" class="alert-msg" style="display: none;"></div>
+    <div id="alert" class="alert-msg" style="visibility: hidden;"></div>
     <div class="buttons">
       <button id="btnRoll" class="btn btn-primary" disabled>
         Roll <kbd>R</kbd>
       </button>
-      <button id="btnPlus" class="btn btn-secondary" disabled>
-        +1 Dice <kbd>Space</kbd>
-      </button>
+      <div class="dice-controls">
+        <button id="btnMinus" class="btn btn-secondary" disabled>−1</button>
+        <button id="btnPlus" class="btn btn-secondary" disabled>+1 Dice</button>
+      </div>
     </div>
   </main>
   <footer>

@@ -6,8 +6,9 @@ let totalRollCount = 0;
 let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
+let stopRequested = false;
 let interval;
-const version = 'v1.2.9';
+const version = 'v1.3.0';
 let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
@@ -29,6 +30,7 @@ let gameMode = 'allEqual';
 const totalRollCountLimitExceeded = 'Naplnený maximálny počet hodov a nebol dosiahnutý požadovaný výsledok';
 const invalidGameMode = 'Neplatný herný mód';
 const sequenceImpossible = 'Sequence je nemožná s viac ako 6 kockami — kocka má len hodnoty 1–6';
+const gameStopped = 'Hra bola zastavená';
 
 const matrix = [
 	{ number: 1, activePieces: [5] },
@@ -43,6 +45,7 @@ const matrix = [
 const diceContainer = document.getElementById('diceContainer');
 const rollButton = document.getElementById('btnRoll');
 const plusButton = document.getElementById('btnPlus');
+const minusButton = document.getElementById('btnMinus');
 const statsSumValue = document.getElementById('statsSumValue');
 const statsAvgValue = document.getElementById('statsAvgValue');
 const totalRollCountValue = document.getElementById('totalRollCountValue');
@@ -209,15 +212,15 @@ window.addEventListener('load', () => {
 const validateGameMode = () => {
 	if (gameMode === 'pairs' && diceArray.length % 2 !== 0) {
 		alertElement.textContent = invalidGameMode;
-		alertElement.style.display = 'block';
+		alertElement.style.visibility = 'visible';
 		return false;
 	}
 	if (gameMode === 'sequence' && diceArray.length > matrix.length) {
 		alertElement.textContent = sequenceImpossible;
-		alertElement.style.display = 'block';
+		alertElement.style.visibility = 'visible';
 		return false;
 	}
-	alertElement.style.display = 'none';
+	alertElement.style.visibility = 'hidden';
 	return true;
 };
 
@@ -228,11 +231,17 @@ const resetStopwatch = () => {
 
 // Function to enable or disable buttons and settings controls during a roll
 const toggleButtons = (enabled) => {
-	rollButton.disabled = !enabled;
-	plusButton.disabled = !enabled;
+	rollButton.disabled = gameIsRunning ? false : !enabled;
+	plusButton.disabled = !enabled || numberOfDices >= maxDices;
+	minusButton.disabled = !enabled || numberOfDices <= 2;
 	speedSlider.disabled = !enabled;
 	unlimitedToggle.disabled = !enabled;
 	maxRollsInput.disabled = !enabled || unlimitedToggle.checked;
+};
+
+const updateRollButton = () => {
+	rollButton.innerHTML = gameIsRunning ? 'Stop <kbd>R</kbd>' : 'Roll <kbd>R</kbd>';
+	rollButton.className = gameIsRunning ? 'btn btn-danger' : 'btn btn-primary';
 };
 
 const startGame = () => {
@@ -244,19 +253,34 @@ const startGame = () => {
 		clearInterval(interval);
 		resetStopwatch();
 		gameIsRunning = true;
+		updateRollButton();
 		document.title = originalTitle;
 	}
 };
 
+const stopGame = () => {
+	gameIsRunning = false;
+	stopRequested = false;
+	stopStopwatch();
+	flashTitle(originalTitle, false);
+	updateRollButton();
+	toggleButtons(true);
+};
+
 const repeatRoll = () => {
+	if (stopRequested) {
+		stopGame();
+		return;
+	}
 	if (totalRollCount < totalRollCountLimit || totalRollCountLimit === 0) {
 		rollDices();
 	} else {
 		alertElement.textContent = totalRollCountLimitExceeded;
-		alertElement.style.display = 'block';
+		alertElement.style.visibility = 'visible';
 		stopStopwatch();
 		flashTitle('Neúspech!');
 		gameIsRunning = false;
+		updateRollButton();
 	}
 };
 
@@ -273,10 +297,11 @@ const performRolls = async () => {
 
 const wonTheGame = () => {
 	document.querySelectorAll('.dice-container .dice').forEach((dice) => dice.classList.add('dice-equals'));
-	alertElement.style.display = 'none';
+	alertElement.style.visibility = 'hidden';
 	stopStopwatch();
 	flashTitle('Vyhral si!');
 	gameIsRunning = false;
+	updateRollButton();
 };
 
 const gameCheckResult = () => {
@@ -320,40 +345,55 @@ const rollDices = async () => {
 	gameCheckResult();
 };
 
-const addNewDice = () => {
-	if (numberOfDices >= maxDices) return;
+const resetDiceState = () => {
 	clearInterval(stopwatchInterval);
 	gameIsRunning = false;
+	stopRequested = false;
 	flashTitle(originalTitle, false);
 	diceArray = [];
 	diceContainer.textContent = '';
-	numberOfDices++;
-	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
 	statsSumValue.textContent = 0;
 	statsAvgValue.textContent = 0;
 	totalRollCountValue.textContent = 0;
 	resetStopwatch();
+	updateRollButton();
+};
+
+const addNewDice = () => {
+	if (numberOfDices >= maxDices) return;
+	resetDiceState();
+	numberOfDices++;
+	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
 	toggleButtons(true);
 };
 
-// Handle the "click" event on the roll button
+const removeDice = () => {
+	if (numberOfDices <= 2) return;
+	resetDiceState();
+	numberOfDices--;
+	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
+	toggleButtons(true);
+};
+
 rollButton.addEventListener('click', () => {
+	if (gameIsRunning) {
+		stopRequested = true;
+		rollButton.disabled = true;
+		alertElement.textContent = gameStopped;
+		alertElement.style.visibility = 'visible';
+		return;
+	}
 	if (validateGameMode()) {
-		alertElement.style.display = 'none';
+		alertElement.style.visibility = 'hidden';
 		startGame();
 		rollDices();
 	} else {
-		toggleButtons(true); // Enable buttons if the game mode is invalid
+		toggleButtons(true);
 	}
 });
 
-// Add new dice after click on plus button
-plusButton.addEventListener('click', () => {
-	addNewDice();
-	if (!validateGameMode()) return;
-	clearInterval(interval);
-	document.title = originalTitle;
-});
+plusButton.addEventListener('click', () => addNewDice());
+minusButton.addEventListener('click', () => removeDice());
 
 /**
  * Global keyboard shortcuts handler.
