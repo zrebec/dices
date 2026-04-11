@@ -7,7 +7,7 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.2.4';
+const version = 'v1.2.5';
 let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
@@ -314,6 +314,8 @@ const rollDices = async () => {
 const addNewDice = () => {
 	if (numberOfDices >= maxDices) return;
 	clearInterval(stopwatchInterval);
+	gameIsRunning = false;
+	flashTitle(originalTitle, false);
 	diceArray = [];
 	diceContainer.textContent = '';
 	numberOfDices++;
