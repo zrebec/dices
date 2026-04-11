@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0d0d0d">
   <title>Dices</title>
-  <script type="module" crossorigin src="/dices/assets/index-BSIntO50.js"></script>
-  <link rel="stylesheet" crossorigin href="/dices/assets/index-D28uV6Np.css">
+  <script type="module" crossorigin src="/dices/assets/index-CMgHmtza.js"></script>
+  <link rel="stylesheet" crossorigin href="/dices/assets/index-CWuUw5HH.css">
 </head>
 
 <body>
@@ -61,14 +61,15 @@
     <div class="timer-wrap">
       <span id="totalElapsedTime" class="timer">00:00:00</span>
     </div>
-    <div id="alert" class="alert-msg" style="display: none;"></div>
+    <div id="alert" class="alert-msg" style="visibility: hidden;"></div>
     <div class="buttons">
       <button id="btnRoll" class="btn btn-primary" disabled>
         Roll <kbd>R</kbd>
       </button>
-      <button id="btnPlus" class="btn btn-secondary" disabled>
-        +1 Dice <kbd>Space</kbd>
-      </button>
+      <div class="dice-controls">
+        <button id="btnMinus" class="btn btn-secondary" disabled>−1</button>
+        <button id="btnPlus" class="btn btn-secondary" disabled>+1 Dice</button>
+      </div>
     </div>
   </main>
   <footer>
