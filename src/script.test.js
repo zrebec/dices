@@ -56,7 +56,23 @@ test('isPairs two equal dice returns true', () => {
 	expect(isPairs(diceValues)).toBe(true);
 });
 
-test('isPairs empty array returns true', () => {
+test('isPairs empty array returns false', () => {
 	const diceValues = [];
-	expect(isPairs(diceValues)).toBe(true);
+	expect(isPairs(diceValues)).toBe(false);
+});
+
+test('isSequence single element returns false', () => {
+	expect(isSequence([3])).toBe(false);
+});
+
+test('isSequence empty array returns false', () => {
+	expect(isSequence([])).toBe(false);
+});
+
+test('isEvenOdd single element returns false', () => {
+	expect(isEvenOdd([4])).toBe(false);
+});
+
+test('isEvenOdd empty array returns false', () => {
+	expect(isEvenOdd([])).toBe(false);
 });
