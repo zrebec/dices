@@ -7,7 +7,7 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.2.2';
+const version = 'v1.2.3';
 let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
@@ -62,14 +62,34 @@ speedSlider.addEventListener('input', () => {
 	speedLabel.textContent = speedLabels[idx];
 });
 
+/**
+ * Sanitizes the max rolls input value to a safe integer within [1, 999].
+ *
+ * HTML min/max attributes are advisory only — they do not prevent a user
+ * (or browser extension / DevTools) from submitting out-of-range, negative,
+ * or non-numeric values. parseInt() on such input can return NaN or negative
+ * numbers, which would cause the game to either never end (NaN is falsy in
+ * comparisons) or end immediately (negative limit < totalRollCount on first
+ * roll). Always clamp and validate on the JS side, never trust HTML
+ * attributes alone as a security or correctness boundary.
+ */
+const sanitizeMaxRolls = (value) => {
+	const parsed = parseInt(value);
+	if (isNaN(parsed) || parsed < 1) return 1;
+	if (parsed > 999) return 999;
+	return parsed;
+};
+
 unlimitedToggle.addEventListener('change', () => {
 	maxRollsInput.disabled = unlimitedToggle.checked;
-	totalRollCountLimit = unlimitedToggle.checked ? 0 : parseInt(maxRollsInput.value) || 50;
+	totalRollCountLimit = unlimitedToggle.checked ? 0 : sanitizeMaxRolls(maxRollsInput.value);
 });
 
 maxRollsInput.addEventListener('input', () => {
 	if (!unlimitedToggle.checked) {
-		totalRollCountLimit = parseInt(maxRollsInput.value) || 1;
+		const sanitized = sanitizeMaxRolls(maxRollsInput.value);
+		totalRollCountLimit = sanitized;
+		maxRollsInput.value = sanitized;
 	}
 });
 
