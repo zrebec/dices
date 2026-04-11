@@ -4,52 +4,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d0d0d">
   <title>Dices</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
-  <div class="container">
-    <div class="wrapper">
-      <header>
-        Dice Roller
-      </header>
-      <main class="content">
-        <div id="gameModes" class="game-modes">
-          <button class="game-mode-btn" data-mode="allEqual">All Equal</button>
-          <button class="game-mode-btn" data-mode="pairs">Pairs</button>
-          <button class="game-mode-btn" data-mode="sequence">Sequence</button>
-          <button class="game-mode-btn" data-mode="evenOdd">Even/Odd</button>
-          <button class="game-mode-btn" data-mode="anything">Anything</button>
-        </div>
-        <div id="diceContainer" class="dice-container">
-        </div>
-        <div>
-          <div class="stats">
-            <span>SUM:</span>
-            <span class="statsValue" id="statsSumValue">1</span>
-            <span>AVG:</span>
-            <span class="statsValue" id="statsAvgValue">1</span>
-            <span>TOTAL:</span>
-            <span class="statsValue" id="totalRollCountValue">0</span>
-          </div>
-          <div class="stats">
-            <span class="statsValue timer" id="totalElapsedTime">00:00:00</span>
-          </div>
-        </div>
-        <div id="alert" class="stats" style="display: none; color: red; font-weight: bold;"></div>
-        <div class="buttons">
-          <button id="btnRoll" class="btn" disabled>[R]oll with dice</button>
-          <button id="btnPlus" class="btn" disabled>[&nbsp;] +1</button>
-        </div>
-      </main>
-      <footer>
-        <div>Created in 2022</div>
-        <div id="appVersion"></div>
-        <div>Last Update 2026</div>
-      </footer>
+  <header>
+    Dice Roller
+  </header>
+  <main class="content">
+    <div class="game-modes-wrap">
+      <span class="game-modes-label">Game Mode</span>
+      <div id="gameModes" class="game-modes">
+        <button class="game-mode-btn" data-mode="allEqual">All Equal</button>
+        <button class="game-mode-btn" data-mode="pairs">Pairs</button>
+        <button class="game-mode-btn" data-mode="sequence">Sequence</button>
+        <button class="game-mode-btn" data-mode="evenOdd">Even / Odd</button>
+        <button class="game-mode-btn" data-mode="anything">Anything</button>
+      </div>
     </div>
-  </div>
+    <div id="diceContainer" class="dice-container"></div>
+    <div class="stats-container">
+      <div class="stat-card">
+        <span class="stat-value" id="statsSumValue">0</span>
+        <span class="stat-label">Sum</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="statsAvgValue">0</span>
+        <span class="stat-label">Average</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="totalRollCountValue">0</span>
+        <span class="stat-label">Rolls</span>
+      </div>
+    </div>
+    <div class="timer-wrap">
+      <span id="totalElapsedTime" class="timer">00:00:00</span>
+    </div>
+    <div id="alert" class="alert-msg" style="display: none;"></div>
+    <div class="buttons">
+      <button id="btnRoll" class="btn btn-primary" disabled>
+        Roll <kbd>R</kbd>
+      </button>
+      <button id="btnPlus" class="btn btn-secondary" disabled>
+        +1 Dice <kbd>Space</kbd>
+      </button>
+    </div>
+  </main>
+  <footer>
+    <span>Created in 2022</span>
+    <span id="appVersion"></span>
+    <span>Last Update 2026</span>
+  </footer>
   <script type="module" src="/script.js"></script>
 </body>
 

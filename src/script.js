@@ -7,7 +7,7 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.0.1';
+const version = 'v1.1.1';
 const totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
@@ -244,8 +244,8 @@ const rollDices = async () => {
 	// Enable the roll button and plus button
 	toggleButtons(true);
 
-	gameCheckResult();
 	updateStatistics();
+	gameCheckResult();
 };
 
 const addNewDice = () => {
