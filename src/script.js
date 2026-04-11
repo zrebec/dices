@@ -7,7 +7,7 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.2.8';
+const version = 'v1.2.9';
 let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
@@ -28,6 +28,7 @@ let gameMode = 'allEqual';
 // messages for translations
 const totalRollCountLimitExceeded = 'Naplnený maximálny počet hodov a nebol dosiahnutý požadovaný výsledok';
 const invalidGameMode = 'Neplatný herný mód';
+const sequenceImpossible = 'Sequence je nemožná s viac ako 6 kockami — kocka má len hodnoty 1–6';
 
 const matrix = [
 	{ number: 1, activePieces: [5] },
@@ -208,6 +209,11 @@ window.addEventListener('load', () => {
 const validateGameMode = () => {
 	if (gameMode === 'pairs' && diceArray.length % 2 !== 0) {
 		alertElement.textContent = invalidGameMode;
+		alertElement.style.display = 'block';
+		return false;
+	}
+	if (gameMode === 'sequence' && diceArray.length > matrix.length) {
+		alertElement.textContent = sequenceImpossible;
 		alertElement.style.display = 'block';
 		return false;
 	}
