@@ -7,12 +7,21 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.1.1';
-const totalRollCountLimit = 0; // 0 for unlimited game
+const version = 'v1.2.1';
+let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
-const timeout = 170;
-const repeat = 14;
+let timeout = 170;
+let repeat = 14;
+
+const speedPresets = [
+	{ timeout: 420, repeat: 22 }, // 1 - Slowest
+	{ timeout: 260, repeat: 18 }, // 2 - Slow
+	{ timeout: 170, repeat: 14 }, // 3 - Normal
+	{ timeout: 95, repeat: 10 }, // 4 - Fast
+	{ timeout: 40, repeat: 6 }, // 5 - Fastest
+];
+const speedLabels = ['Slowest', 'Slow', 'Normal', 'Fast', 'Fastest'];
 const validGameModes = ['allEqual', 'pairs', 'sequence', 'evenOdd', 'anything'];
 let gameMode = 'allEqual';
 
@@ -40,8 +49,30 @@ const totalElapsedTime = document.getElementById('totalElapsedTime');
 const alertElement = document.getElementById('alert');
 const appVersion = document.getElementById('appVersion');
 const gameModeButtons = document.querySelectorAll('.game-mode-btn');
+const speedSlider = document.getElementById('speedSlider');
+const speedLabel = document.getElementById('speedLabel');
+const unlimitedToggle = document.getElementById('unlimitedToggle');
+const maxRollsInput = document.getElementById('maxRollsInput');
 
 // Event Listeners
+speedSlider.addEventListener('input', () => {
+	const idx = parseInt(speedSlider.value) - 1;
+	timeout = speedPresets[idx].timeout;
+	repeat = speedPresets[idx].repeat;
+	speedLabel.textContent = speedLabels[idx];
+});
+
+unlimitedToggle.addEventListener('change', () => {
+	maxRollsInput.disabled = unlimitedToggle.checked;
+	totalRollCountLimit = unlimitedToggle.checked ? 0 : parseInt(maxRollsInput.value) || 50;
+});
+
+maxRollsInput.addEventListener('input', () => {
+	if (!unlimitedToggle.checked) {
+		totalRollCountLimit = parseInt(maxRollsInput.value) || 1;
+	}
+});
+
 gameModeButtons.forEach((button) => {
 	button.addEventListener('click', function () {
 		// Remove active class from all buttons

@@ -14,6 +14,24 @@
     Dice Roller
   </header>
   <main class="content">
+    <div class="roll-settings-wrap">
+      <span class="settings-label">Roll Settings</span>
+      <div class="roll-settings">
+        <div class="setting-row">
+          <span class="setting-name">Speed</span>
+          <input type="range" id="speedSlider" class="speed-slider" min="1" max="5" value="3" step="1">
+          <span id="speedLabel" class="setting-value">Normal</span>
+        </div>
+        <div class="setting-row">
+          <span class="setting-name">Max Rolls</span>
+          <label class="unlimited-label">
+            <input type="checkbox" id="unlimitedToggle" checked>
+            <span>Unlimited</span>
+          </label>
+          <input type="number" id="maxRollsInput" class="max-rolls-input" min="1" max="999" value="50" disabled>
+        </div>
+      </div>
+    </div>
     <div class="game-modes-wrap">
       <span class="game-modes-label">Game Mode</span>
       <div id="gameModes" class="game-modes">
