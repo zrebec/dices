@@ -7,7 +7,7 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.2.1';
+const version = 'v1.2.2';
 let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
@@ -312,7 +312,29 @@ plusButton.addEventListener('click', () => {
 	document.title = originalTitle;
 });
 
+/**
+ * Global keyboard shortcuts handler.
+ *
+ * Security / UX concern:
+ * Global keydown listeners intercept ALL keystrokes regardless of where the
+ * user's focus currently is. Without the form-element guard below, pressing
+ * 'R' or 'Space' while typing into an <input>, <textarea>, or <select> would
+ * trigger game actions (rolling dice, adding a dice) instead of entering text.
+ *
+ * This is a well-known pitfall in web applications that mix global hotkeys
+ * with form controls. The standard mitigation is to check event.target.tagName
+ * and bail out early when the keystroke originates from a form element, so the
+ * browser can process it normally (typing characters, toggling checkboxes, etc.).
+ *
+ * Without this guard an attacker or confused user could also inadvertently
+ * trigger rapid repeated game actions by holding a key down in an input field,
+ * causing unexpected state mutations (resetting stopwatch, adding dozens of
+ * dice via the Space key, etc.).
+ */
 addEventListener('keydown', (event) => {
+	const tag = event.target.tagName;
+	if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
 	if (event.key.toUpperCase() === 'R') {
 		rollButton.click();
 	} else if (event.key === ' ') {
