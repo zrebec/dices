@@ -7,7 +7,7 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.2.7';
+const version = 'v1.2.8';
 let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
@@ -220,10 +220,13 @@ const resetStopwatch = () => {
 	totalElapsedTime.textContent = '00:00:00';
 };
 
-// Function to enable or disable buttons
+// Function to enable or disable buttons and settings controls during a roll
 const toggleButtons = (enabled) => {
 	rollButton.disabled = !enabled;
 	plusButton.disabled = !enabled;
+	speedSlider.disabled = !enabled;
+	unlimitedToggle.disabled = !enabled;
+	maxRollsInput.disabled = !enabled || unlimitedToggle.checked;
 };
 
 const startGame = () => {
