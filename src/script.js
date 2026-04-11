@@ -7,7 +7,7 @@ let stopwatchInterval;
 let stopwatchTime = 0;
 let gameIsRunning = false;
 let interval;
-const version = 'v1.2.5';
+const version = 'v1.2.6';
 let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
@@ -184,9 +184,9 @@ const stopStopwatch = () => {
 };
 
 const flashTitle = (title, flashing = true) => {
+	clearInterval(interval);
 	if (!flashing) {
 		document.title = title;
-		clearInterval(interval);
 		return;
 	}
 	interval = setInterval(() => {
