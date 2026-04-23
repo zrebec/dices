@@ -9,7 +9,7 @@ let stopwatchTime = 0;
 let gameIsRunning = false;
 let stopRequested = false;
 let interval;
-const version = 'v1.3.0';
+const version = 'v1.4.0';
 let totalRollCountLimit = 0; // 0 for unlimited game
 const maxDices = 10;
 const originalTitle = document.title;
