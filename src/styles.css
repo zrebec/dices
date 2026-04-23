@@ -12,7 +12,7 @@
 	--text-muted: #777;
 
 	--dice-size: 6rem;
-	--dice-dot: #f97316;
+	--dice-dot: #d4d4d4;
 	--header-h: 3.5rem;
 	--footer-h: 2.5rem;
 	--desk: color-mix(in oklab, var(--bg), #003300 60%);

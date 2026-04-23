@@ -1,4 +1,5 @@
 import { isAllEqual, isPairs, isSequence, isEvenOdd } from './modules/conditions.js';
+import { diceColors, assignDiceColor } from './modules/colors.js';
 
 let numberOfDices = 3;
 let diceArray = [];
@@ -31,6 +32,8 @@ const totalRollCountLimitExceeded = 'Naplnený maximálny počet hodov a nebol d
 const invalidGameMode = 'Neplatný herný mód';
 const sequenceImpossible = 'Sequence je nemožná s viac ako 6 kockami — kocka má len hodnoty 1–6';
 const gameStopped = 'Hra bola zastavená';
+
+const diceColorMap = new Map(); // diceNumber → color, persists until page reload
 
 const matrix = [
 	{ number: 1, activePieces: [5] },
@@ -151,10 +154,23 @@ const rollDice = (dice, diceObject = matrix[Math.floor(Math.random() * matrix.le
 	}
 };
 
+const shuffleDicePositions = () => {
+	const children = Array.from(diceContainer.children);
+	for (let i = children.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[children[i], children[j]] = [children[j], children[i]];
+	}
+	children.forEach((child) => diceContainer.appendChild(child));
+};
+
 const drawDice = (diceNumber) => {
 	// Create a new element to represent the dice and add the "dice" and "dice-number" classes to the element
 	const dice = document.createElement('div');
 	dice.classList.add('dice', `dice-${diceNumber}`);
+
+	// Assign a persistent color to this dice background
+	const color = assignDiceColor(diceNumber, diceColorMap);
+	dice.style.background = color;
 
 	// Create nine elements to represent the dice pieces
 	for (let i = 1; i <= 9; i++) {
@@ -338,6 +354,9 @@ const rollDices = async () => {
 
 	await performRolls();
 
+	// Shuffle dice positions after each roll
+	shuffleDicePositions();
+
 	// Enable the roll button and plus button
 	toggleButtons(true);
 
@@ -369,6 +388,7 @@ const addNewDice = () => {
 
 const removeDice = () => {
 	if (numberOfDices <= 2) return;
+	diceColorMap.delete(numberOfDices);
 	resetDiceState();
 	numberOfDices--;
 	for (let i = 1; i <= numberOfDices; i++) drawDice(i);
